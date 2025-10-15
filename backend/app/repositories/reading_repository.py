@@ -14,16 +14,11 @@ async def get_latest_readings(db: AsyncSession, limit: int = 10):
     result = await db.execute(select(Reading).order_by(Reading.timestamp.desc()).limit(limit))
     return result.scalars().all()
 
-# async def get_readings_by_room_and_type(db: AsyncSession, room: str, sensor_type: str):
-# '''Fetch all readings filtered by room and sensor type.'''
-#     stmt = select(Reading).where(
-#         and_(
-#             Reading.location == room,
-#             Reading.type == sensor_type
-#         )
-#     )
-#     result = await db.execute(stmt)
-#     return result.scalars().all()
+async def get_readings_by_sensor_id(db, sensor_id, since):
+    '''Fetch all readings filtered by room and sensor type.'''
+    stmt = select(Reading).where(Reading.sensor_id == sensor_id).where(Reading.measured_at >= since).order_by(Reading.measured_at)
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
 async def get_readings_by_location_and_type(db, location, type, since):
     '''Fetch readings filtered by location and type since a given time.'''

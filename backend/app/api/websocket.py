@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from backend.app.utils.websocket_manager import WebSocketManager
 from backend.app.services import reading_service
@@ -24,19 +25,24 @@ async def broadcast_batched_readings(ts):
 
 async def broadcast_stats(ts):
     while True:
-        await asyncio.sleep(ts)
-        db_gen = get_db()
-        db = await anext(db_gen)
         try:
-            sensor_ids = await reading_service.get_all_sensor_ids(db)
-            print("Sensor Ids:", sensor_ids)
-            stats_payload = {}
-            for sensor_id in sensor_ids:
-                stats = await reading_service.get_stats_for_sensor(db, sensor_id)
-                stats_payload[sensor_id] = stats
-            await manager.broadcast_json({"stats": stats_payload})
-        finally:
-            await db_gen.aclose()
+            await asyncio.sleep(ts)
+            db_gen = get_db()
+            db = await anext(db_gen)
+            try:
+                sensor_ids = await reading_service.get_all_sensor_ids(db)
+                # print("Sensor Ids:", sensor_ids)
+                stats_payload = {}
+                for sensor_id in sensor_ids:
+                    stats = await reading_service.get_stats_for_sensor(db, sensor_id)
+                    stats_payload[sensor_id] = stats
+                # print("Stats payload:", stats_payload)
+                await manager.broadcast_json({"stats": stats_payload})
+            finally:
+                await db_gen.aclose()
+        except Exception as e:
+            print("Error in broadcast_stats:", e)
+            traceback.print_exc()
 
 async def start_broadcast_tasks():
     asyncio.create_task(broadcast_batched_readings(BATCH_INTERVAL))
