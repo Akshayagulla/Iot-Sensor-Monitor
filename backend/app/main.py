@@ -11,6 +11,7 @@ async def lifespan(app: FastAPI):
 
 async def startup_event():
     await init_db()
+    await websocket.start_broadcast_tasks()
 
 # Pass lifespan to FastAPI so it runs at startup
 server = FastAPI(

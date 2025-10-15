@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from backend.app.schemas.reading import ReadingCreate, ReadingResponse
 from backend.app.services import reading_service, stats_service
+from backend.app.api.websocket import add_to_batch_buffer
 from backend.app.utils.database import get_db
 import datetime
 
@@ -25,6 +26,8 @@ async def add_reading(reading_data: dict, db=Depends(get_db)):
         measured_at=reading_data.get("measured_at"),
         received_at=datetime.datetime.now(datetime.timezone.utc)
     )
+
+    add_to_batch_buffer(reading.dict())
     return await reading_service.add_reading(db, reading.dict())
 
 @router.get("/latest", response_model=list[ReadingResponse])
