@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from backend.app.api import sensors, readings, websocket
 from backend.app.utils.database import init_db
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
+
+# Allow all origins (anyone can access)
+
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,6 +23,13 @@ server = FastAPI(
     title="IoT Sensor Monitor API",
     version="1.0",
     lifespan=lifespan
+)
+server.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 👈 allow all domains
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST, PUT, DELETE, etc.
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Include API routers
