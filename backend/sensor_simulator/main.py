@@ -5,7 +5,7 @@ import httpx
 from backend.sensor_simulator.base_sensor import BaseSensor
 
 # --- Config ---
-MAIN_SERVER_URL = "http://localhost:8000/api/v1/readings/ingest"
+MAIN_SERVER_URL = "http://localhost:9000/api/v1/readings/ingest"
 SEND_INTERVAL = 3
 LOCATIONS = ["lab", "server-room", "storage-room"]
 SENSORS_PER_LOCATION = 1
