@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 import statistics
+from sqlalchemy import select, func
+from backend.app.models.reading import Reading
 
 async def add_reading(db, reading_data):
     """Add a new reading to the database."""
@@ -20,6 +22,34 @@ async def get_recent_readings(db, limit=10):
 #     db=Depends(get_db)
 # ):
 #     return await reading_repository.get_readings_by_room_and_type(db, room, sensor_type)
+
+async def get_all_sensor_ids(db):
+    """Return a list of all unique sensor IDs."""
+    result = await db.execute(select(Reading.sensor_id).distinct())
+    sensor_ids = [row[0] for row in result.fetchall()]
+    return sensor_ids
+
+async def get_stats_for_sensor(db, sensor_id):
+    """Return min, max, avg for the last 24h for a given sensor."""
+    from datetime import datetime, timedelta, timezone
+    now = datetime.now(timezone.utc)
+    since = now - timedelta(days=1)
+    result = await db.execute(
+        select(
+            func.min(Reading.value),
+            func.max(Reading.value),
+            func.avg(Reading.value)
+        ).where(
+            Reading.sensor_id == sensor_id,
+            Reading.measured_at >= since
+        )
+    )
+    min_val, max_val, avg_val = result.one()
+    return {
+        "min": min_val,
+        "max": max_val,
+        "avg": round(avg_val, 2) if avg_val is not None else None
+    }
 
 async def get_historical_readings(
     location: str = Query(...),
