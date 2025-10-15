@@ -14,8 +14,5 @@ class ReadingBase(BaseModel):
 class ReadingCreate(ReadingBase):
     pass
 
-class ReadingResponse(ReadingBase):
-    id: int
-    timestamp: datetime
-
+class ReadingResponse(BaseModel):
     model_config = {"from_attributes": True}

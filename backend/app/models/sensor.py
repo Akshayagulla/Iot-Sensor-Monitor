@@ -41,3 +41,4 @@ class Sensor(Base):
 
     sensor_id = Column(String, primary_key=True, index=True)
     location = Column(String, nullable=False)
+    type = Column(String, nullable=False)

@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+.ENV/
+
+# VSCode settings
+.vscode/
+
+# OS files
+.DS_Store
+iot_sensors.db
+
+# Logs
+*.log
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Database files
+*.sqlite3
+*.db
+
+# Pytest cache
+.pytest_cache/
+
+# OneDrive temp files
+~$*
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Uvicorn/Starlette/FastAPI reload artifacts
+*.reload
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# Pydantic/migrations
+alembic/
+migrations/

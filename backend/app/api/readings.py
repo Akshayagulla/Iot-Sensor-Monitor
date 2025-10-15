@@ -36,3 +36,11 @@ async def latest_readings(limit: int = 10, db=Depends(get_db)):
 async def get_sensor_stats(sensor_id: str, db=Depends(get_db)):
     """Fetch 24-hour stats for a given sensor."""
     return await stats_service.get_daily_stats(db, sensor_id)
+
+# @router.get("/", response_model=List[ReadingResponse])
+# async def get_readings(room: str, sensor_type: str, db=Depends(get_db)):
+#     return await reading_service.get_readings_by_room_and_type(db, room, sensor_type)
+    
+@router.get("/historical")
+async def get_historical_readings(location: str, type: str, db=Depends(get_db)):
+    return await reading_service.get_historical_readings(location, type, db)

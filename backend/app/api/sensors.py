@@ -11,3 +11,10 @@ async def register_sensor(sensor: SensorCreate, db=Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Sensor already exists")
     return await sensor_repository.create_sensor(db, sensor.dict())
+
+@router.get("/{sensor_id}", response_model=SensorResponse)
+async def get_sensor(sensor_id: str, db=Depends(get_db)):
+    sensor = await sensor_repository.get_sensor(db, sensor_id)
+    if not sensor:
+        raise HTTPException(status_code=404, detail="Sensor not found")
+    return sensor
