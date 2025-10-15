@@ -64,9 +64,24 @@ def compute_statistics(readings, now):
 
 async def get_all_sensor_ids(db):
     """Return a list of all unique sensor IDs."""
-    result = await db.execute(select(Reading.sensor_id).distinct())
-    sensor_ids = [row[0] for row in result.fetchall()]
-    return sensor_ids
+    result = await db.execute(
+        select(
+            Reading.sensor_id,
+            Reading.location,
+            Reading.sensor_type
+        ).distinct()
+    )
+
+    rows = result.fetchall()  # Get all rows at once
+
+    # Example: [(1, 'hum001', 'lab', 'humidity'), (2, 'tem004', 'server-room', 'temperature'), ...]
+
+    # Extract columns into separate lists
+    sensor_ids = [row[0] for row in rows]
+    locations = [row[1] for row in rows]
+    types = [row[2] for row in rows]
+
+    return sensor_ids, locations, types
 
 async def get_stats_for_sensor(db, sensor_id):
     """Return min, max, avg for the last 24h for a given sensor."""

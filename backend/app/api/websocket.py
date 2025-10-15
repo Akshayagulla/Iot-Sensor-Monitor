@@ -11,7 +11,7 @@ manager = WebSocketManager()
 # Global buffer for new readings
 batch_buffer = []
 BATCH_INTERVAL = 15
-STATS_INTERVAL = 300 # 5 minutes
+STATS_INTERVAL = 15 # 5 minutes
 
 def add_to_batch_buffer(reading):
     batch_buffer.append(reading)
@@ -30,12 +30,12 @@ async def broadcast_stats(ts):
             db_gen = get_db()
             db = await anext(db_gen)
             try:
-                sensor_ids = await reading_service.get_all_sensor_ids(db)
+                sensor_ids,locations,sensor_types = await reading_service.get_all_sensor_ids(db)
                 # print("Sensor Ids:", sensor_ids)
                 stats_payload = {}
-                for sensor_id in sensor_ids:
+                for sensor_id,location,sensor_type in zip(sensor_ids,locations,sensor_types):
                     stats = await reading_service.get_stats_for_sensor(db, sensor_id)
-                    stats_payload[sensor_id] = stats
+                    stats_payload[location+'/'+sensor_type] = stats
                 # print("Stats payload:", stats_payload)
                 await manager.broadcast_json({"stats": stats_payload})
             finally:
