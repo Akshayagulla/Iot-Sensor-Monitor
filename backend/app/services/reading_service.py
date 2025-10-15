@@ -65,7 +65,8 @@ async def get_historical_readings(
     readings = readings.scalars().all()
     if not readings:
         raise HTTPException(status_code=404, detail="No readings found")
-
+    readings = readings[-20:] # Limit to last 20 readings
+    
     # 2. Prepare readings for response
     readings_list = [
         {"timestamp": r.measured_at.isoformat() + "Z", "value": r.value}

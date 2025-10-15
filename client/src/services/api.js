@@ -6,7 +6,7 @@ import axios from 'axios';
  * REACT_APP_API_BASE_URL should point to your backend (e.g., http://localhost:4000).
  */
 const api = axios.create({
-    baseURL: 'http://localhost:4000',
+    baseURL: 'http://localhost:8000',
     timeout: 12000,
 });
 

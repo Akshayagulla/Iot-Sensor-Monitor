@@ -41,13 +41,15 @@ export default function SensorDetails() {
 
     fetchHistoricalData({ location, type })
       .then((data) => {
+        console.log(data);
         if (!active) return;
         setReadings(Array.isArray(data.readings) ? data.readings : []);
         setStats(data.stats || {});
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
         if (!active) return;
+        console.log(err);
         setError('Failed to load historical data.');
         setLoading(false);
       });
