@@ -61,3 +61,4 @@ coverage.xml
 # Pydantic/migrations
 alembic/
 migrations/
+client/node_modules
